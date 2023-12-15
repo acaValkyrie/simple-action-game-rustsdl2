@@ -21,3 +21,20 @@ pub fn sdl_setup(window_width: u32, window_height: u32) -> (Canvas<sdl2::video::
 
     (canvas, event_pump)
 }
+
+use sdl2::event::Event;
+use sdl2::keyboard::Keycode;
+
+pub fn is_end_event(event_pump: &mut sdl2::EventPump) -> bool{
+    for event in event_pump.poll_iter() {
+        match event {
+            Event::Quit { .. }
+            | Event::KeyDown {
+                keycode: Some(Keycode::Escape),
+                ..
+            } => return true,
+            _ => {}
+        }
+    }
+    false
+}

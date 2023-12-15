@@ -1,6 +1,4 @@
-use sdl2::event::Event;
 use sdl2::pixels::Color;
-use sdl2::keyboard::Keycode;
 use sdl2::keyboard::Scancode;
 use sdl2::rect::Rect;
 use std::time::Duration;
@@ -14,22 +12,13 @@ pub fn main() {
     
     // イベントループ
     'running: loop {
-        for event in event_pump.poll_iter() {
-            match event {
-                Event::Quit { .. }
-                | Event::KeyDown {
-                    keycode: Some(Keycode::Escape),
-                    ..
-                } => break 'running,
-                _ => {}
-            }
-        }
+        if sdl_modules::is_end_event(&mut event_pump) { break 'running; }
         
         // キャンバスの初期化
         canvas.set_draw_color(Color::RGB(0, 0, 0));
         canvas.clear();
 
-        let state = event_pump.keyboard_state();
+        let state = &event_pump.keyboard_state();
         if state.is_scancode_pressed(Scancode::Up){    y -= 5; }
         if state.is_scancode_pressed(Scancode::Down){  y += 5; }
         if state.is_scancode_pressed(Scancode::Left){  x -= 5; }
