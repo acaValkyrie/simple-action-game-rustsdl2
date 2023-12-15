@@ -3,27 +3,37 @@ use sdl2::pixels::Color;
 use sdl2::rect::Rect;
 use sdl2::keyboard::Keycode;
 use sdl2::keyboard::Scancode;
+use sdl2::render::Canvas;
+use sdl2::EventPump;
 use std::time::Duration;
 
-pub fn main() {
+fn sdl_setup(window_width: u32, window_height: u32) -> (Canvas<sdl2::video::Window>, EventPump){
     // SDL2の初期化
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
     
     // ウィンドウの作成
     let window = video_subsystem
-        .window("Rust-SDL2", 800, 600)
+        .window("Rust-SDL2", window_width, window_height)
         .position_centered()
         .build()
         .unwrap();
 
     // キャンバスの作成
-    let mut canvas = window.into_canvas().build().unwrap();
-    
+    let canvas = window.into_canvas().build().unwrap();
+
+    // イベントループの作成
+    let event_pump = sdl_context.event_pump().unwrap();
+
+    (canvas, event_pump)
+}
+
+pub fn main() {
+    let (mut canvas, mut event_pump) 
+        = sdl_setup(800, 600);
     let (mut x, mut y) = (350, 250);
     
     // イベントループ
-    let mut event_pump = sdl_context.event_pump().unwrap();
     'running: loop {
         for event in event_pump.poll_iter() {
             match event {
@@ -35,6 +45,7 @@ pub fn main() {
                 _ => {}
             }
         }
+        
         // キャンバスの初期化
         canvas.set_draw_color(Color::RGB(0, 0, 0));
         canvas.clear();
